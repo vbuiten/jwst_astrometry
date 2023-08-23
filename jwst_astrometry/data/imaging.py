@@ -1,7 +1,7 @@
 '''Module for loading the (simultaneous) imaging data.'''
 
-from data import DataAbstractBase
-from calibration.utils import match_sources_to_cat
+from jwst_astrometry.data.data import DataAbstractBase
+from jwst_astrometry.calibration.utils import match_sources_to_cat
 
 import numpy as np
 from astropy.wcs import WCS

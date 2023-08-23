@@ -1,6 +1,6 @@
 '''Module for the abstract base class for the data.'''
 
-from abc import ABC, abstractmethod, abstractproperty
+from abc import ABC, abstractmethod
 
 class DataAbstractBase(ABC):
 

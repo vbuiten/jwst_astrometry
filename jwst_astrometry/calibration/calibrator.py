@@ -5,9 +5,9 @@ import astropy.units as u
 from astropy.coordinates import SkyCoord
 from astropy.io import fits
 
-from data.imaging import ImagingData
-from data.gaia import get_gaia_catalog
-from utils import *
+from jwst_astrometry.data.imaging import ImagingData
+from jwst_astrometry.data.gaia import get_gaia_catalog
+from jwst_astrometry.calibration.utils import *
 
 class WCSCalibrator:
     def __init__(self, im_data: ImagingData, gaia_box_width=0.1*u.deg, max_separation=1*u.arcsec):
@@ -25,6 +25,7 @@ class WCSCalibrator:
 
         # match to sources in the image
         self.pos_sky_det, self.pos_sky_cat = match_sources_to_cat(pos_sky_all_det, gaia_cat, max_separation=max_separation)
+        print ("Found {} matches".format(len(self.pos_sky_det)))
 
         # measure the mean offset Gaia - image
         self.dra, self.ddec = measure_offset(self.pos_sky_det, self.pos_sky_cat)
@@ -52,7 +53,8 @@ class WCSCalibrator:
 
     def correct_header_other(self, other_filename):
         '''
-        Correct the WCS in the header of another file, using the offset measured from this image.
+        Correct the WCS in the header of another file, using the offset measured from this image. Can be used to correct
+        an MRS IFU cube based on simultaneous imaging data.
 
         :param other_filename:
         :return:
