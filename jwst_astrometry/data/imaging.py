@@ -26,6 +26,8 @@ class ImagingData(DataAbstractBase):
 
         self.rms = np.std(self.data)
 
+        self.sources = None
+
 
     def find_sources(self, fwhm=5, threshold_factor=5):
 

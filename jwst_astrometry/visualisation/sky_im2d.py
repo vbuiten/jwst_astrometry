@@ -14,6 +14,9 @@ class SkyIm2D(SkyImBase):
         self.fig = plt.figure(*fig_args)
         self.ax = self.fig.add_subplot(projection=self.wcs)
 
+        self.ax.set_xlabel("RA")
+        self.ax.set_ylabel("Dec")
+
 
     def imshow(self, im_data, norm="log", cmap="turbo", *args, **kwargs):
 

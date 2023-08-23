@@ -37,4 +37,4 @@ def translate_wcs(wcs, dra, ddec):
     wcs_new.wcs.crval[0] = crval_new.ra.to(u.deg).value
     wcs_new.wcs.crval[1] = crval_new.dec.to(u.deg).value
 
-    return wcs_new
+    return wcs_new,  crval_new
