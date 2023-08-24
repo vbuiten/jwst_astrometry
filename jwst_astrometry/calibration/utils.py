@@ -3,6 +3,9 @@
 import numpy as np
 import astropy.units as u
 from astropy.coordinates import SkyCoord
+from astropy.wcs import WCS
+
+from IPython import embed
 
 
 def match_sources_to_cat(source_pos: SkyCoord, cat_pos: SkyCoord, max_separation: u.Quantity = 1*u.arcsec):
@@ -12,11 +15,11 @@ def match_sources_to_cat(source_pos: SkyCoord, cat_pos: SkyCoord, max_separation
     # find matches within max_separation
     within_max_sep = d2d < max_separation
 
-    # isoltate the matches
+    # isolate the matches
     pos_detected = source_pos[within_max_sep]
     pos_catalog = cat_pos[idx[within_max_sep]]
 
-    return pos_detected, pos_catalog
+    return within_max_sep, pos_detected, pos_catalog
 
 
 def measure_offset(pos_detected, pos_catalog):
@@ -32,9 +35,13 @@ def translate_wcs(wcs, dra, ddec):
 
     crval_new = SkyCoord(*wcs.wcs.crval, unit="deg", frame="icrs").spherical_offsets_by(dra, ddec)
 
-    wcs_new = wcs.copy()
+    wcs_new = wcs.deepcopy()
 
     wcs_new.wcs.crval[0] = crval_new.ra.to(u.deg).value
     wcs_new.wcs.crval[1] = crval_new.dec.to(u.deg).value
+
+    # it seems that the wcs object needs to be re-initialized to update the wcs
+    # the crval attributes are updated, but the transforms apparently not
+    wcs_new = WCS(wcs_new.to_header())
 
     return wcs_new,  crval_new

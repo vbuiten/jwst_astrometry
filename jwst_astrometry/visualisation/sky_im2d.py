@@ -1,6 +1,6 @@
 '''Module for visualising 2D sky images with a coordinate frame.'''
 
-from sky_im_base import SkyImBase
+from jwst_astrometry.visualisation.sky_im_base import SkyImBase
 
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm

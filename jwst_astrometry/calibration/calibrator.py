@@ -9,6 +9,8 @@ from jwst_astrometry.data.imaging import ImagingData
 from jwst_astrometry.data.gaia import get_gaia_catalog
 from jwst_astrometry.calibration.utils import *
 
+from IPython import embed
+
 class WCSCalibrator:
     def __init__(self, im_data: ImagingData, gaia_box_width=0.1*u.deg, max_separation=1*u.arcsec):
 
@@ -24,7 +26,7 @@ class WCSCalibrator:
         gaia_cat = get_gaia_catalog(self.im_data.crval_ra, self.im_data.crval_dec, boxwidth=gaia_box_width)
 
         # match to sources in the image
-        self.pos_sky_det, self.pos_sky_cat = match_sources_to_cat(pos_sky_all_det, gaia_cat, max_separation=max_separation)
+        self.matched_mask, self.pos_sky_det, self.pos_sky_cat = match_sources_to_cat(pos_sky_all_det, gaia_cat, max_separation=max_separation)
         print ("Found {} matches".format(len(self.pos_sky_det)))
 
         # measure the mean offset Gaia - image
@@ -40,6 +42,11 @@ class WCSCalibrator:
         self.wcs_new = wcs_new
 
         print ("Updated the header with the new CRVALs.")
+
+        # also update the positions of the sources (for visualisation/checks)
+        pos_pix = np.transpose((self.im_data.sources[self.matched_mask]["xcentroid"],
+                                self.im_data.sources[self.matched_mask]["ycentroid"]))
+        self.pos_sky_det_new = self.wcs_new.pixel_to_world(pos_pix[:,0], pos_pix[:,1])
 
 
     def write_corrected_wcs(self):
