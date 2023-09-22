@@ -29,11 +29,15 @@ class ImagingData(DataAbstractBase):
         self.sources = None
 
 
-    def find_sources(self, fwhm=5, threshold_factor=5):
+    def find_sources(self, fwhm=5, threshold_factor=5, shift_data=False):
 
         # find sources with DAOStarFinder
         daofind = DAOStarFinder(fwhm=fwhm, threshold=threshold_factor*self.rms)
-        sources = daofind(self.data)
+
+        if shift_data:
+            sources = daofind(self.data - np.median(self.data))
+        else:
+            sources = daofind(self.data)
         print ("Found {} sources.".format(len(sources)))
 
         # convert pixel coordinates to RA/Dec
